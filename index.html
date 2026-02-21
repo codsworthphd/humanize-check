@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClearPen — AI Text Detector</title>
+    <meta name="description" content="Check your writing for AI patterns before anyone else does. Get instant feedback and specific fixes. Free, private, no signup.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Fraunces', 'Georgia', 'serif'],
+                        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        charcoal: { 900: '#121212', 800: '#1a1a1a', 700: '#2d2d2d', 600: '#3d3d3d' },
+                        cream: { 50: '#fefcf8', 100: '#faf6ee', 200: '#f5edd8' },
+                        amber: { 500: '#d4a017', 600: '#c8952e', 700: '#a67b1e' },
+                        forest: { 600: '#2d5016', 700: '#1f3a0f' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'DM Sans', system-ui, sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Fraunces', Georgia, serif; }
+
+        /* Grain texture overlay */
+        .grain::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0.4;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px 256px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .grain > * { position: relative; z-index: 2; }
+
+        /* Subtle horizontal rule pattern */
+        .ruled-bg {
+            background-image: repeating-linear-gradient(
+                0deg, transparent, transparent 39px, rgba(0,0,0,0.03) 39px, rgba(0,0,0,0.03) 40px
+            );
+        }
+
+        /* Link underline animation */
+        .link-underline {
+            background-image: linear-gradient(#d4a017, #d4a017);
+            background-size: 0% 2px;
+            background-position: left bottom;
+            background-repeat: no-repeat;
+            transition: background-size 0.3s ease;
+        }
+        .link-underline:hover { background-size: 100% 2px; }
+    </style>
+</head>
+<body class="bg-cream-50 text-charcoal-800 antialiased">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-cream-50/90 backdrop-blur-sm border-b border-charcoal-800/5">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="font-serif text-xl font-700 tracking-tight text-charcoal-900">ClearPen</div>
+            <a href="#tool" class="px-5 py-2 bg-charcoal-900 text-cream-50 text-sm font-600 rounded hover:bg-charcoal-700 transition-colors">
+                Try Free
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="relative pt-32 pb-20 px-6 grain bg-charcoal-900 overflow-hidden">
+        <div class="max-w-6xl mx-auto">
+            <div class="max-w-3xl">
+                <p class="text-amber-500 font-600 text-sm tracking-widest uppercase mb-6">Free AI Text Detector</p>
+                <h1 class="font-serif text-5xl md:text-7xl font-800 text-cream-50 leading-[1.05] mb-8">
+                    Your writing<br>shouldn't sound<br>like a <em class="text-amber-500 italic">robot</em> wrote it.
+                </h1>
+                <p class="text-lg text-cream-200/70 max-w-xl leading-relaxed mb-10">
+                    Paste any text. See exactly which phrases trigger AI detectors. Get specific fixes. Runs in your browser — we never see your words.
+                </p>
+                <a href="#tool" class="inline-block px-8 py-4 bg-amber-500 text-charcoal-900 font-700 rounded hover:bg-amber-600 transition-colors text-lg">
+                    Analyze Your Text &darr;
+                </a>
+            </div>
+        </div>
+        <!-- Diagonal slice -->
+        <div class="absolute bottom-0 left-0 right-0 h-16 bg-cream-50" style="clip-path: polygon(0 100%, 100% 0, 100% 100%)"></div>
+    </section>
+
+    <!-- Problem / Why it matters -->
+    <section class="py-24 px-6 ruled-bg">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-12 gap-12 items-start">
+                <div class="md:col-span-5">
+                    <p class="text-amber-600 font-600 text-sm tracking-widest uppercase mb-4">The Problem</p>
+                    <h2 class="font-serif text-3xl md:text-4xl font-700 text-charcoal-900 leading-tight">
+                        AI detectors are everywhere. One wrong phrase flags your entire piece.
+                    </h2>
+                </div>
+                <div class="md:col-span-7 space-y-6">
+                    <div class="border-l-2 border-amber-500 pl-6 py-2">
+                        <h3 class="font-600 text-charcoal-900 mb-1">Students</h3>
+                        <p class="text-charcoal-600 leading-relaxed">Professors flag assignments that read like ChatGPT. Even if you wrote it yourself, the wrong phrasing can hurt your grade.</p>
+                    </div>
+                    <div class="border-l-2 border-amber-500 pl-6 py-2">
+                        <h3 class="font-600 text-charcoal-900 mb-1">Content Writers</h3>
+                        <p class="text-charcoal-600 leading-relaxed">Search engines downrank AI content. Clients reject work that sounds robotic. Your reputation is on the line.</p>
+                    </div>
+                    <div class="border-l-2 border-amber-500 pl-6 py-2">
+                        <h3 class="font-600 text-charcoal-900 mb-1">Professionals</h3>
+                        <p class="text-charcoal-600 leading-relaxed">Emails, reports, and proposals that trigger AI detectors undermine your credibility.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Section -->
+    <section id="tool" class="py-24 px-6 bg-charcoal-900 grain">
+        <div class="max-w-4xl mx-auto">
+            <p class="text-amber-500 font-600 text-sm tracking-widest uppercase mb-4 text-center">The Tool</p>
+            <h2 class="font-serif text-3xl md:text-4xl font-700 text-cream-50 text-center mb-3">Analyze your text</h2>
+            <p class="text-center text-cream-200/60 mb-10">Paste your writing below. Results in under 2 seconds.</p>
+            
+            <div class="bg-charcoal-700 border border-charcoal-600 rounded overflow-hidden mb-6">
+                <textarea 
+                    id="input"
+                    placeholder="Paste your text here..."
+                    class="w-full h-64 bg-transparent px-6 py-5 text-cream-100 placeholder-cream-200/30 resize-none focus:outline-none"
+                ></textarea>
+                <div class="flex items-center justify-between px-6 py-4 bg-charcoal-800 border-t border-charcoal-600">
+                    <span class="text-sm text-cream-200/50" id="wordCount">0 words</span>
+                    <button 
+                        onclick="analyze()"
+                        id="analyzeBtn"
+                        class="px-6 py-2.5 bg-amber-500 text-charcoal-900 rounded text-sm font-700 hover:bg-amber-600 transition-colors"
+                    >
+                        Analyze Text
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="hidden mt-8 space-y-6">
+                <div class="bg-charcoal-700 border border-charcoal-600 rounded p-8 text-center">
+                    <div class="text-sm text-cream-200/60 mb-2 font-500">AI Detection Score</div>
+                    <div id="scoreBadge" class="text-4xl font-serif font-700 mb-4">—</div>
+                    <div class="max-w-md mx-auto h-2 bg-charcoal-600 rounded-full overflow-hidden mb-3">
+                        <div id="meterFill" class="h-full rounded-full transition-all duration-700"></div>
+                    </div>
+                    <p id="issueCount" class="text-sm text-cream-200/60"></p>
+                </div>
+
+                <div id="details" class="space-y-4"></div>
+
+                <div id="tipsSection" class="bg-charcoal-700 border border-charcoal-600 rounded p-8">
+                    <h3 class="text-lg font-serif font-700 mb-4 text-cream-50">How to fix it</h3>
+                    <div id="tips" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features — staggered, not 3-box grid -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <p class="text-amber-600 font-600 text-sm tracking-widest uppercase mb-4">Why ClearPen</p>
+            <h2 class="font-serif text-3xl md:text-4xl font-700 text-charcoal-900 mb-16 max-w-lg">Built different from every other detector.</h2>
+            
+            <div class="grid md:grid-cols-2 gap-x-16 gap-y-12">
+                <div class="md:pt-12">
+                    <div class="text-amber-500 font-serif text-5xl font-800 mb-3">16</div>
+                    <h3 class="font-600 text-charcoal-900 text-lg mb-2">Pattern Categories</h3>
+                    <p class="text-charcoal-600 leading-relaxed">Promotional language, AI vocabulary, filler phrases, chatbot artifacts, hedging, and 11 more categories most tools miss.</p>
+                </div>
+                <div>
+                    <div class="text-amber-500 font-serif text-5xl font-800 mb-3">&lt;2s</div>
+                    <h3 class="font-600 text-charcoal-900 text-lg mb-2">Instant Results</h3>
+                    <p class="text-charcoal-600 leading-relaxed">Paste your text, get a full breakdown. No waiting, no queues, no spinners.</p>
+                </div>
+                <div class="md:pt-8">
+                    <div class="text-amber-500 font-serif text-5xl font-800 mb-3">0</div>
+                    <h3 class="font-600 text-charcoal-900 text-lg mb-2">Data Stored</h3>
+                    <p class="text-charcoal-600 leading-relaxed">Everything runs in your browser. Your text never leaves your machine. We never see it.</p>
+                </div>
+                <div class="md:pt-20">
+                    <div class="text-amber-500 font-serif text-5xl font-800 mb-3">&infin;</div>
+                    <h3 class="font-600 text-charcoal-900 text-lg mb-2">Unlimited Checks</h3>
+                    <p class="text-charcoal-600 leading-relaxed">No account, no credit card, no trial period. Check as many documents as you want.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="py-24 px-6 bg-cream-100 border-y border-charcoal-800/5">
+        <div class="max-w-4xl mx-auto">
+            <p class="text-amber-600 font-600 text-sm tracking-widest uppercase mb-4">How It Works</p>
+            <h2 class="font-serif text-3xl md:text-4xl font-700 text-charcoal-900 mb-16">Three steps. No signup.</h2>
+            
+            <div class="space-y-16">
+                <div class="flex items-start gap-8">
+                    <div class="flex-shrink-0 w-14 h-14 bg-charcoal-900 flex items-center justify-center font-serif text-2xl font-800 text-amber-500">1</div>
+                    <div>
+                        <h3 class="text-xl font-600 mb-2 text-charcoal-900">Paste your text</h3>
+                        <p class="text-charcoal-600 leading-relaxed">Essay, blog post, email, report — anything you've written or edited with AI.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-8">
+                    <div class="flex-shrink-0 w-14 h-14 bg-charcoal-900 flex items-center justify-center font-serif text-2xl font-800 text-amber-500">2</div>
+                    <div>
+                        <h3 class="text-xl font-600 mb-2 text-charcoal-900">See what's flagged</h3>
+                        <p class="text-charcoal-600 leading-relaxed">We scan for 16 different AI patterns and show you every phrase that triggered detection.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-8">
+                    <div class="flex-shrink-0 w-14 h-14 bg-charcoal-900 flex items-center justify-center font-serif text-2xl font-800 text-amber-500">3</div>
+                    <div>
+                        <h3 class="text-xl font-600 mb-2 text-charcoal-900">Fix it yourself</h3>
+                        <p class="text-charcoal-600 leading-relaxed">Use our suggestions to rewrite problem areas. Keep your voice, remove the robotic tells.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pro / Waitlist -->
+    <section class="py-24 px-6 bg-charcoal-900 grain">
+        <div class="max-w-4xl mx-auto">
+            <div class="border border-amber-500/30 rounded p-10 md:p-16">
+                <p class="text-amber-500 font-600 text-sm tracking-widest uppercase mb-4">Coming Soon</p>
+                <h2 class="font-serif text-3xl md:text-4xl font-700 text-cream-50 mb-4">Automatic rewrites.</h2>
+                <p class="text-cream-200/60 text-lg mb-8 max-w-xl">ClearPen Pro takes your flagged text and rewrites it to pass AI detectors. One click.</p>
+                
+                <a id="proButton" href="#" class="inline-block px-8 py-4 bg-amber-500 text-charcoal-900 rounded font-700 hover:bg-amber-600 transition-colors text-lg cursor-not-allowed opacity-75">
+                    Coming Soon
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-24 px-6">
+        <div class="max-w-3xl mx-auto">
+            <p class="text-amber-600 font-600 text-sm tracking-widest uppercase mb-4">FAQ</p>
+            <h2 class="font-serif text-3xl md:text-4xl font-700 text-charcoal-900 mb-16">Questions people ask.</h2>
+            
+            <div class="space-y-0 divide-y divide-charcoal-800/10">
+                <div class="py-8">
+                    <h3 class="font-600 text-charcoal-900 mb-3">Does this work for all AI detectors?</h3>
+                    <p class="text-charcoal-600 leading-relaxed">ClearPen identifies common patterns that most AI detectors flag. Our 16 categories cover the major tells across GPTZero, Turnitin, Originality.ai, and others.</p>
+                </div>
+                <div class="py-8">
+                    <h3 class="font-600 text-charcoal-900 mb-3">Do you store my text?</h3>
+                    <p class="text-charcoal-600 leading-relaxed">No. Everything runs in your browser. We never see or store your content.</p>
+                </div>
+                <div class="py-8">
+                    <h3 class="font-600 text-charcoal-900 mb-3">How accurate is this?</h3>
+                    <p class="text-charcoal-600 leading-relaxed">We identify specific patterns known to trigger AI detectors. The tool shows you exactly what to fix, giving you control over the final result.</p>
+                </div>
+                <div class="py-8">
+                    <h3 class="font-600 text-charcoal-900 mb-3">Is it really free?</h3>
+                    <p class="text-charcoal-600 leading-relaxed">The detector is free forever. No limits, no signups. ClearPen Pro (automatic rewrites) will be a paid product when it launches.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-24 px-6 bg-cream-100 border-t border-charcoal-800/5">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="font-serif text-3xl md:text-5xl font-700 text-charcoal-900 mb-4">Your writing, more human.</h2>
+            <p class="text-xl text-charcoal-600 mb-10">That's the whole point.</p>
+            <a href="#tool" class="inline-block px-8 py-4 bg-charcoal-900 text-cream-50 font-700 rounded hover:bg-charcoal-700 transition-colors text-lg">
+                Try It Free
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-charcoal-800/5">
+        <div class="max-w-6xl mx-auto text-center text-charcoal-600/50 text-sm">
+            <p>&copy; 2026 ClearPen</p>
+        </div>
+    </footer>
+
+    <script>
+    const PATTERNS={"significance_inflation":["stands as","serves as","is a testament","is a reminder","vital role","significant role","crucial role","pivotal role","key role","pivotal moment","key moment","key turning point","underscores its importance","highlights its importance","underscores its significance","highlights its significance","reflects broader","symbolizing its ongoing","symbolizing its enduring","symbolizing its lasting","contributing to the","setting the stage for","marking the","shaping the","represents a shift","marks a shift","evolving landscape","focal point","indelible mark","deeply rooted","enduring legacy","rich tapestry","broader movement"],"notability_emphasis":["independent coverage","local media outlets","regional media outlets","national media outlets","music outlets","business outlets","tech outlets","profiled in","written by a leading expert","active social media presence","has been featured in","has been cited in","maintains a strong digital presence"],"superficial_analysis":["highlighting","underscoring","emphasizing","ensuring","reflecting","symbolizing","contributing to","cultivating","fostering","encompassing","showcasing","valuable insights","align with","aligns with","resonate with","resonates with"],"promotional_language":["boasts a","boasts an","vibrant","rich cultural heritage","profound","enhancing its","exemplifies","commitment to","natural beauty","nestled","in the heart of","groundbreaking","renowned","breathtaking","must-visit","stunning","bustling","thriving","world-class","cutting-edge","state-of-the-art","unparalleled","innovative","diverse range","wide range","comprehensive range","unique blend","perfect blend","seamless blend","delve into","delve","tapestry","multifaceted","intricacies","holistic","synergy","paradigm","robust","leverage","utilizes","facilitates","pivotal","nuanced","noteworthy"],"vague_attributions":["according to many","observers note","experts say","according to experts","many believe","widely regarded","it is widely","it is generally","is often considered","is often regarded","is often seen","analysts suggest","critics argue","some scholars","many scholars","historians note","researchers suggest","studies show","studies have shown","research shows","research has shown","some argue","others argue","many argue"],"challenges_formula":["despite.*challenges","faces.*challenges","despite.*obstacles","despite.*criticism","although.*criticized","while.*controversial","not without.*controversy","remains.*controversial","has faced.*scrutiny","has drawn.*criticism","despite these challenges","despite facing","despite the challenges"],"ai_vocabulary":["delve","tapestry","multifaceted","intricacies","holistic","synergy","paradigm","robust","leverage","utilizes","facilitates","pivotal","nuanced","noteworthy","landscape","realm","crucial","moreover","furthermore","additionally","consequently","harnessing","underscores","underscored","navigating","navigate","spearheading","bolstering","underpinning","interwoven","interplay","commendable","intricate","comprehensive","pivotal","arguably"],"chatbot_artifacts":["as an AI","as a language model","I cannot","I can't provide","I don't have access","I'm not able to","I must clarify","it's important to note","it's worth noting","it is important to note","it is worth noting","I should mention","let me clarify","I want to emphasize","I'd be happy to","certainly!","absolutely!","great question","that's a great","sure thing"],"hedging_phrases":["it's important to","it is important to","it's worth","it is worth","it should be noted","it remains to be seen","only time will tell","the future will tell","time will tell"],"negative_parallelisms":["not just.*but also","not only.*but also","not merely.*but also","isn't just.*it's also"],"rule_of_three_patterns":["\\w+, \\w+, and \\w+","innovation, creativity, and","culture, history, and","social, economic, and","political, economic, and","environmental, social, and"],"markdown_artifacts":["##","**","***","- **","1. **"],"citation_bugs":["citation needed","\\[\\d+\\]","according to Wikipedia"],"knowledge_cutoff":["as of my last","as of my knowledge","as of my training","my training data","I was trained","my knowledge cutoff"],"copula_avoidance":{"stands as":"is","serves as":"is","remains as":"is","acts as":"is","functions as":"is","operates as":"is","exists as":"is"},"filler_replacements":{"plays a vital role in":"matters for","plays a crucial role in":"matters for","plays a significant role in":"matters for","plays an important role in":"matters for","in today's world":"now/today","in the modern era":"now/today","it's important to note that":"(remove)","it is worth noting that":"(remove)","at the end of the day":"ultimately","when it comes to":"for/about","in terms of":"for/about","on the other hand":"but/however","as a matter of fact":"in fact","due to the fact that":"because","in order to":"to","a wide range of":"many/various","the fact that":"that","take into account":"consider","make a decision":"decide"}};
+
+    const input=document.getElementById('input');
+    const wc=document.getElementById('wordCount');
+    input.addEventListener('input',()=>{const w=input.value.trim()?input.value.trim().split(/\s+/).length:0;wc.textContent=w+' word'+(w!==1?'s':'')});
+
+    function findMatches(text,patterns){const matches=[];const lower=text.toLowerCase();if(Array.isArray(patterns)){patterns.forEach(p=>{let count=0,idx=lower.indexOf(p.toLowerCase()),pi=0;while(idx!==-1&&pi<100){count++;idx=lower.indexOf(p.toLowerCase(),idx+1);pi++}if(count>0)matches.push([p,count])})}else{Object.keys(patterns).forEach(p=>{let count=0,idx=lower.indexOf(p.toLowerCase()),pi=0;while(idx!==-1&&pi<100){count++;idx=lower.indexOf(p.toLowerCase(),idx+1);pi++}if(count>0)matches.push([p,count])})}return matches.sort((a,b)=>b[1]-a[1])}
+
+    function analyze(){
+    const text=input.value.trim();
+    if(!text||text.split(/\s+/).length<10){alert('Please paste at least 10 words.');return}
+    const r={};
+    r.significance_inflation=findMatches(text,PATTERNS.significance_inflation);
+    r.notability_emphasis=findMatches(text,PATTERNS.notability_emphasis);
+    r.superficial_analysis=findMatches(text,PATTERNS.superficial_analysis);
+    r.promotional_language=findMatches(text,PATTERNS.promotional_language);
+    r.vague_attributions=findMatches(text,PATTERNS.vague_attributions);
+    r.ai_vocabulary=findMatches(text,PATTERNS.ai_vocabulary);
+    r.copula_avoidance=findMatches(text,PATTERNS.copula_avoidance);
+    r.filler_phrases=findMatches(text,PATTERNS.filler_replacements);
+    r.chatbot_artifacts=findMatches(text,PATTERNS.chatbot_artifacts);
+    r.hedging_phrases=findMatches(text,PATTERNS.hedging_phrases);
+    r.negative_parallelisms=findMatches(text,PATTERNS.negative_parallelisms);
+    r.markdown_artifacts=findMatches(text,PATTERNS.markdown_artifacts);
+    r.citation_bugs=findMatches(text,PATTERNS.citation_bugs);
+    r.knowledge_cutoff=findMatches(text,PATTERNS.knowledge_cutoff);
+    const curly=(text.match(/[\u201C\u201D\u2018\u2019]/g)||[]).length;
+    const em=(text.match(/\u2014/g)||[]).length+((text.match(/ -- /g)||[]).length);
+
+    let total=0;
+    const sum=a=>a.reduce((s,x)=>s+x[1],0);
+    total+=sum(r.significance_inflation)+sum(r.notability_emphasis)+sum(r.superficial_analysis)+sum(r.promotional_language)+sum(r.vague_attributions)+sum(r.ai_vocabulary)+sum(r.copula_avoidance)+sum(r.filler_phrases)+sum(r.chatbot_artifacts)*3+sum(r.hedging_phrases)+sum(r.negative_parallelisms)+sum(r.markdown_artifacts)*2+sum(r.citation_bugs)*5+sum(r.knowledge_cutoff)*3+(curly>2?curly:0)+(em>3?em:0);
+
+    const words=text.split(/\s+/).length;
+    const density=total/Math.max(words,1)*100;
+    let level='low';
+    if(r.citation_bugs.length||r.knowledge_cutoff.length||r.chatbot_artifacts.length)level='very-high';
+    else if(density>5||total>30)level='high';
+    else if(density>2||total>15)level='medium';
+
+    const labels={'low':'Low Risk','medium':'Medium Risk','high':'High Risk','very-high':'Very High Risk'};
+    const colors={'low':'#10b981','medium':'#d4a017','high':'#f97316','very-high':'#ef4444'};
+    const pcts={'low':15,'medium':45,'high':75,'very-high':95};
+
+    const badge=document.getElementById('scoreBadge');
+    badge.textContent=labels[level];
+    badge.style.color=colors[level];
+    const fill=document.getElementById('meterFill');
+    fill.style.width=pcts[level]+'%';
+    fill.style.background=colors[level];
+    document.getElementById('issueCount').textContent=total+' AI pattern'+(total!==1?'s':'')+' found in '+words+' words (density: '+density.toFixed(1)+'%)';
+
+    const cats=[
+    ['Promotional / Inflated Language','promotional_language'],
+    ['AI Vocabulary','ai_vocabulary'],
+    ['Superficial Analysis Words','superficial_analysis'],
+    ['Significance Inflation','significance_inflation'],
+    ['Filler Phrases','filler_phrases'],
+    ['Hedging Phrases','hedging_phrases'],
+    ['Chatbot Artifacts','chatbot_artifacts'],
+    ['Vague Attributions','vague_attributions'],
+    ['Copula Avoidance','copula_avoidance'],
+    ['Negative Parallelisms','negative_parallelisms'],
+    ];
+    let html='';
+    cats.forEach(([title,key])=>{
+    if(r[key]&&r[key].length){
+    html+='<div class="bg-charcoal-700 border border-charcoal-600 rounded p-6"><div class="text-sm font-600 mb-3 text-cream-100">'+title+'</div><div class="flex flex-wrap gap-2">';
+    r[key].forEach(([pat,cnt])=>{html+='<span class="bg-charcoal-800 border border-charcoal-600 px-3 py-1 rounded text-xs text-cream-200/80">'+pat+'<span class="text-amber-500 font-700 ml-1">&times;'+cnt+'</span></span>'});
+    html+='</div></div>';
+    }});
+    if(curly>2)html+='<div class="bg-charcoal-700 border border-charcoal-600 rounded p-6"><div class="text-sm font-600 mb-3 text-cream-100">Curly Quotes (AI typographic style)</div><div class="flex flex-wrap gap-2"><span class="bg-charcoal-800 border border-charcoal-600 px-3 py-1 rounded text-xs text-cream-200/80">curly quotes<span class="text-amber-500 font-700 ml-1">&times;'+curly+'</span></span></div></div>';
+    if(em>3)html+='<div class="bg-charcoal-700 border border-charcoal-600 rounded p-6"><div class="text-sm font-600 mb-3 text-cream-100">Excessive Em Dashes</div><div class="flex flex-wrap gap-2"><span class="bg-charcoal-800 border border-charcoal-600 px-3 py-1 rounded text-xs text-cream-200/80">em dashes<span class="text-amber-500 font-700 ml-1">&times;'+em+'</span></span></div></div>';
+    document.getElementById('details').innerHTML=html;
+
+    const tips=[];
+    if(r.ai_vocabulary.length)tips.push('<b class="text-cream-50">Replace AI buzzwords</b> like "'+r.ai_vocabulary.slice(0,3).map(x=>x[0]).join('", "')+'" with simpler, everyday words.');
+    if(r.promotional_language.length)tips.push('<b class="text-cream-50">Tone down hype words</b> like "'+r.promotional_language.slice(0,3).map(x=>x[0]).join('", "')+'".');
+    if(r.filler_phrases.length)tips.push('<b class="text-cream-50">Cut filler phrases</b> like "'+r.filler_phrases.slice(0,2).map(x=>x[0]).join('", "')+'" — say it directly.');
+    if(r.hedging_phrases.length)tips.push('<b class="text-cream-50">Remove hedging</b> — be direct instead of saying "it\'s important to note."');
+    if(r.chatbot_artifacts.length)tips.push('<b class="text-cream-50">Remove chatbot phrases</b> like "'+r.chatbot_artifacts.slice(0,2).map(x=>x[0]).join('", '")+'".');
+    if(r.superficial_analysis.length)tips.push('<b class="text-cream-50">Use specific verbs</b> instead of vague ones like "highlighting" or "showcasing."');
+    if(curly>2)tips.push('<b class="text-cream-50">Replace curly quotes</b> with straight quotes — AI models use curly by default.');
+    if(em>3)tips.push('<b class="text-cream-50">Use fewer em dashes</b> — AI overuses them. Try commas or periods instead.');
+    if(!tips.length)tips.push('<b class="text-cream-50">Looking good!</b> Your text has minimal AI patterns.');
+    document.getElementById('tips').innerHTML=tips.map(t=>'<div class="text-cream-200/60 pb-3 border-b border-charcoal-600 last:border-0 text-sm leading-relaxed">'+t+'</div>').join('');
+
+    document.getElementById('results').classList.remove('hidden');
+    document.getElementById('results').scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+
+    // Stripe Payment Link — replace href when ready
+    // document.getElementById('proButton').href = 'https://buy.stripe.com/YOUR_LINK';
+    </script>
+</body>
+</html>
