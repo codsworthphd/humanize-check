@@ -494,7 +494,7 @@
     if(r.promotional_language.length)tips.push('<b class="text-cream-50">Tone down hype words</b> like "'+r.promotional_language.slice(0,3).map(x=>x[0]).join('", "')+'".');
     if(r.filler_phrases.length)tips.push('<b class="text-cream-50">Cut filler phrases</b> like "'+r.filler_phrases.slice(0,2).map(x=>x[0]).join('", "')+'" — say it directly.');
     if(r.hedging_phrases.length)tips.push('<b class="text-cream-50">Remove hedging</b> — be direct instead of saying "it\'s important to note."');
-    if(r.chatbot_artifacts.length)tips.push('<b class="text-cream-50">Remove chatbot phrases</b> like "'+r.chatbot_artifacts.slice(0,2).map(x=>x[0]).join('", '")+'".');
+    if(r.chatbot_artifacts.length)tips.push('<b class="text-cream-50">Remove chatbot phrases</b> like "'+r.chatbot_artifacts.slice(0,2).map(x=>x[0]).join('\", \"')+'".');
     if(r.superficial_analysis.length)tips.push('<b class="text-cream-50">Use specific verbs</b> instead of vague ones like "highlighting" or "showcasing."');
     if(curly>2)tips.push('<b class="text-cream-50">Replace curly quotes</b> with straight quotes — AI models use curly by default.');
     if(em>3)tips.push('<b class="text-cream-50">Use fewer em dashes</b> — AI overuses them. Try commas or periods instead.');
