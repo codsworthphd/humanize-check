@@ -505,20 +505,20 @@
     document.getElementById('results').scrollIntoView({behavior:'smooth',block:'nearest'});
     }
 
-    // Modal functions
-    function openPricingModal() {
+    // Modal functions - explicitly global for onclick compatibility
+    window.openPricingModal = function() {
         const modal = document.getElementById('pricingModal');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         document.body.style.overflow = 'hidden';
-    }
+    };
 
-    function closePricingModal() {
+    window.closePricingModal = function() {
         const modal = document.getElementById('pricingModal');
         modal.classList.add('hidden');
         modal.classList.remove('flex');
         document.body.style.overflow = 'auto';
-    }
+    };
 
     // Add event listener to Pro button for iOS compatibility
     const proButton = document.getElementById('proButton');
