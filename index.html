@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClearPen — AI Text Detector</title>
-    <meta name="description" content="Check your writing for AI patterns before anyone else does. Get instant feedback and specific fixes. Free, private, no signup.">
+    <meta name="description" content="Protect your writing from AI detector false positives. See exactly which phrases get flagged and why. Used by students, writers, and professionals. Free analysis up to 1,500 words.">
     <!-- Cache bust: v2.0 - Fixed pricing modal button -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,12 +80,15 @@
     <section class="relative pt-32 pb-20 px-6 grain bg-charcoal-900 overflow-hidden">
         <div class="max-w-6xl mx-auto">
             <div class="max-w-3xl">
-                <p class="text-amber-500 font-600 text-sm tracking-widest uppercase mb-6">Free AI Text Detector</p>
+                <p class="text-amber-500 font-600 text-sm tracking-widest uppercase mb-6">Protect Your Writing</p>
                 <h1 class="font-serif text-5xl md:text-7xl font-800 text-cream-50 leading-[1.05] mb-8">
-                    Your writing<br>shouldn't sound<br>like a <em class="text-amber-500 italic">robot</em> wrote it.
+                    Don't Let AI Detectors<br>Ruin Your <em class="text-amber-500 italic">Work</em>
                 </h1>
-                <p class="text-lg text-cream-200/70 max-w-xl leading-relaxed mb-10">
-                    Paste any text. See exactly which phrases trigger AI detectors. Get specific fixes. Runs in your browser — we never see your words.
+                <p class="text-lg text-cream-200/70 max-w-xl leading-relaxed mb-6">
+                    See exactly what's being flagged and why — so you can fix it before anyone else sees it.
+                </p>
+                <p class="text-md text-cream-200/60 max-w-xl leading-relaxed mb-10">
+                    Used by students, writers, and professionals who write their own content but keep getting flagged.
                 </p>
                 <a href="#tool" class="inline-block px-8 py-4 bg-amber-500 text-charcoal-900 font-700 rounded hover:bg-amber-600 transition-colors text-lg">
                     Analyze Your Text &darr;
@@ -165,6 +168,32 @@
                 <div id="tipsSection" class="bg-charcoal-700 border border-charcoal-600 rounded p-8">
                     <h3 class="text-lg font-serif font-700 mb-4 text-cream-50">How to fix it</h3>
                     <div id="tips" class="space-y-3"></div>
+                </div>
+
+                <!-- Appeal Helper Section -->
+                <div id="appealSection" class="bg-amber-500/10 border-2 border-amber-500/30 rounded p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <svg class="w-6 h-6 text-amber-500 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-serif font-700 mb-2 text-cream-50">Need to Appeal a False Positive?</h3>
+                            <p class="text-cream-200/70 text-sm mb-4">Generate a professional summary of this analysis to submit to your professor, employer, or reviewer.</p>
+                            <button onclick="generateAppealSummary()" class="px-6 py-3 bg-amber-500 text-charcoal-900 font-700 rounded hover:bg-amber-600 transition-colors">
+                                Generate Appeal Summary
+                            </button>
+                        </div>
+                    </div>
+                    <div id="appealOutput" class="hidden mt-6 pt-6 border-t border-amber-500/20">
+                        <div class="bg-charcoal-800 border border-charcoal-600 rounded p-6 mb-4">
+                            <div class="text-xs text-cream-200/60 mb-2 font-500 uppercase tracking-wide">Professional Summary</div>
+                            <div id="appealText" class="text-cream-100 text-sm leading-relaxed whitespace-pre-wrap"></div>
+                        </div>
+                        <button onclick="copyAppealToClipboard()" class="px-6 py-3 bg-charcoal-700 text-cream-200 font-600 rounded hover:bg-charcoal-600 transition-colors">
+                            📋 Copy to Clipboard
+                        </button>
+                        <span id="copiedNotice" class="hidden ml-3 text-green-400 text-sm font-600">✓ Copied!</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -475,6 +504,29 @@
     <script>
     const PATTERNS={"significance_inflation":["stands as","serves as","is a testament","is a reminder","vital role","significant role","crucial role","pivotal role","key role","pivotal moment","key moment","key turning point","underscores its importance","highlights its importance","underscores its significance","highlights its significance","reflects broader","symbolizing its ongoing","symbolizing its enduring","symbolizing its lasting","contributing to the","setting the stage for","marking the","shaping the","represents a shift","marks a shift","evolving landscape","focal point","indelible mark","deeply rooted","enduring legacy","rich tapestry","broader movement"],"notability_emphasis":["independent coverage","local media outlets","regional media outlets","national media outlets","music outlets","business outlets","tech outlets","profiled in","written by a leading expert","active social media presence","has been featured in","has been cited in","maintains a strong digital presence"],"superficial_analysis":["highlighting","underscoring","emphasizing","ensuring","reflecting","symbolizing","contributing to","cultivating","fostering","encompassing","showcasing","valuable insights","align with","aligns with","resonate with","resonates with"],"promotional_language":["boasts a","boasts an","vibrant","rich cultural heritage","profound","enhancing its","exemplifies","commitment to","natural beauty","nestled","in the heart of","groundbreaking","renowned","breathtaking","must-visit","stunning","bustling","thriving","world-class","cutting-edge","state-of-the-art","unparalleled","innovative","diverse range","wide range","comprehensive range","unique blend","perfect blend","seamless blend","delve into","delve","tapestry","multifaceted","intricacies","holistic","synergy","paradigm","robust","leverage","utilizes","facilitates","pivotal","nuanced","noteworthy"],"vague_attributions":["according to many","observers note","experts say","according to experts","many believe","widely regarded","it is widely","it is generally","is often considered","is often regarded","is often seen","analysts suggest","critics argue","some scholars","many scholars","historians note","researchers suggest","studies show","studies have shown","research shows","research has shown","some argue","others argue","many argue"],"challenges_formula":["despite.*challenges","faces.*challenges","despite.*obstacles","despite.*criticism","although.*criticized","while.*controversial","not without.*controversy","remains.*controversial","has faced.*scrutiny","has drawn.*criticism","despite these challenges","despite facing","despite the challenges"],"ai_vocabulary":["delve","tapestry","multifaceted","intricacies","holistic","synergy","paradigm","robust","leverage","utilizes","facilitates","pivotal","nuanced","noteworthy","landscape","realm","crucial","moreover","furthermore","additionally","consequently","harnessing","underscores","underscored","navigating","navigate","spearheading","bolstering","underpinning","interwoven","interplay","commendable","intricate","comprehensive","pivotal","arguably"],"chatbot_artifacts":["as an AI","as a language model","I cannot","I can't provide","I don't have access","I'm not able to","I must clarify","it's important to note","it's worth noting","it is important to note","it is worth noting","I should mention","let me clarify","I want to emphasize","I'd be happy to","certainly!","absolutely!","great question","that's a great","sure thing"],"hedging_phrases":["it's important to","it is important to","it's worth","it is worth","it should be noted","it remains to be seen","only time will tell","the future will tell","time will tell"],"negative_parallelisms":["not just.*but also","not only.*but also","not merely.*but also","isn't just.*it's also"],"rule_of_three_patterns":["\\w+, \\w+, and \\w+","innovation, creativity, and","culture, history, and","social, economic, and","political, economic, and","environmental, social, and"],"markdown_artifacts":["##","**","***","- **","1. **"],"citation_bugs":["citation needed","\\[\\d+\\]","according to Wikipedia"],"knowledge_cutoff":["as of my last","as of my knowledge","as of my training","my training data","I was trained","my knowledge cutoff"],"copula_avoidance":{"stands as":"is","serves as":"is","remains as":"is","acts as":"is","functions as":"is","operates as":"is","exists as":"is"},"filler_replacements":{"plays a vital role in":"matters for","plays a crucial role in":"matters for","plays a significant role in":"matters for","plays an important role in":"matters for","in today's world":"now/today","in the modern era":"now/today","it's important to note that":"(remove)","it is worth noting that":"(remove)","at the end of the day":"ultimately","when it comes to":"for/about","in terms of":"for/about","on the other hand":"but/however","as a matter of fact":"in fact","due to the fact that":"because","in order to":"to","a wide range of":"many/various","the fact that":"that","take into account":"consider","make a decision":"decide"}};
 
+
+    // Detector badge mapping - which detectors commonly flag each category
+    const DETECTOR_BADGES = {
+        'promotional_language': ['Turnitin', 'GPTZero'],
+        'ai_vocabulary': ['Turnitin', 'GPTZero', 'Originality.ai'],
+        'superficial_analysis': ['Turnitin', 'Originality.ai'],
+        'significance_inflation': ['Turnitin', 'GPTZero'],
+        'filler_phrases': ['GPTZero', 'Originality.ai'],
+        'hedging_phrases': ['Turnitin', 'Originality.ai'],
+        'chatbot_artifacts': ['Turnitin', 'GPTZero', 'Originality.ai'],
+        'vague_attributions': ['Turnitin', 'GPTZero'],
+        'copula_avoidance': ['Turnitin', 'GPTZero'],
+        'negative_parallelisms': ['GPTZero', 'Originality.ai']
+    };
+
+    const BADGE_COLORS = {
+        'Turnitin': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+        'GPTZero': 'bg-green-500/20 text-green-400 border-green-500/30',
+        'Originality.ai': 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+    };
+
+    // Global variable to store current analysis results for Appeal Helper
+    let currentAnalysisResults = null;
     const input=document.getElementById('input');
     const wc=document.getElementById('wordCount');
     input.addEventListener('input',()=>{const w=input.value.trim()?input.value.trim().split(/\s+/).length:0;wc.textContent=w+' word'+(w!==1?'s':'')});
@@ -566,7 +618,14 @@ if(!text||text.split(/\s+/).length<10){alert('Please paste at least 10 words.');
     let html='';
     cats.forEach(([title,key])=>{
     if(r[key]&&r[key].length){
-    html+='<div class="bg-charcoal-700 border border-charcoal-600 rounded p-6"><div class="text-sm font-600 mb-3 text-cream-100">'+title+'</div><div class="flex flex-wrap gap-2">';
+    // Add detector badges
+    let badgeHTML = '';
+    if(DETECTOR_BADGES[key]){
+        badgeHTML = '<div class="flex gap-1 mt-2 mb-3">' + DETECTOR_BADGES[key].map(detector => 
+            '<span class="text-xs px-2 py-0.5 rounded border '+BADGE_COLORS[detector]+'">'+detector+'</span>'
+        ).join('') + '</div>';
+    }
+    html+='<div class="bg-charcoal-700 border border-charcoal-600 rounded p-6"><div class="text-sm font-600 mb-1 text-cream-100">'+title+'</div>'+badgeHTML+'<div class="flex flex-wrap gap-2">';
     r[key].forEach(([pat,cnt])=>{html+='<span class="bg-charcoal-800 border border-charcoal-600 px-3 py-1 rounded text-xs text-cream-200/80">'+pat+'<span class="text-amber-500 font-700 ml-1">&times;'+cnt+'</span></span>'});
     html+='</div></div>';
     }});
@@ -586,6 +645,18 @@ if(!text||text.split(/\s+/).length<10){alert('Please paste at least 10 words.');
     if(!tips.length)tips.push('<b class="text-cream-50">Looking good!</b> Your text has minimal AI patterns.');
     document.getElementById('tips').innerHTML=tips.map(t=>'<div class="text-cream-200/60 pb-3 border-b border-charcoal-600 last:border-0 text-sm leading-relaxed">'+t+'</div>').join('');
 
+    // Store results globally for Appeal Helper
+    currentAnalysisResults = {
+        results: r,
+        total: total,
+        words: words,
+        level: level,
+        curly: curly,
+        em: em,
+        text: text,
+        sentences: text.split(/[.!?]+/).filter(s => s.trim().length > 0).length
+    };
+
     document.getElementById('results').classList.remove('hidden');
     document.getElementById('results').scrollIntoView({behavior:'smooth',block:'nearest'});
     }
@@ -603,6 +674,67 @@ if(!text||text.split(/\s+/).length<10){alert('Please paste at least 10 words.');
         modal.classList.add('hidden');
         modal.classList.remove('flex');
         document.body.style.overflow = 'auto';
+    };
+
+    // Appeal Helper Functions
+    window.generateAppealSummary = function() {
+        if (!currentAnalysisResults) return;
+        
+        const { results: r, total, words, sentences } = currentAnalysisResults;
+        
+        // Compile flagged patterns
+        const flaggedCategories = [];
+        const flaggedPhrases = [];
+        
+        const cats = [
+            ['Promotional / Inflated Language', 'promotional_language'],
+            ['AI Vocabulary', 'ai_vocabulary'],
+            ['Superficial Analysis Words', 'superficial_analysis'],
+            ['Significance Inflation', 'significance_inflation'],
+            ['Filler Phrases', 'filler_phrases'],
+            ['Hedging Phrases', 'hedging_phrases'],
+            ['Chatbot Artifacts', 'chatbot_artifacts'],
+            ['Vague Attributions', 'vague_attributions'],
+            ['Copula Avoidance', 'copula_avoidance'],
+            ['Negative Parallelisms', 'negative_parallelisms']
+        ];
+        
+        cats.forEach(([title, key]) => {
+            if (r[key] && r[key].length) {
+                flaggedCategories.push(title);
+                r[key].slice(0, 3).forEach(([pat]) => flaggedPhrases.push('"' + pat + '"'));
+            }
+        });
+        
+        const summary = `Analysis Summary for Academic Appeal
+
+This text was analyzed for AI writing patterns. ${total} pattern${total !== 1 ? 's were' : ' was'} flagged across ${words} words (approximately ${sentences} sentence${sentences !== 1 ? 's' : ''}).
+
+The following pattern categories were detected:
+${flaggedCategories.map(cat => '• ' + cat).join('\n')}
+
+These patterns are common in well-structured academic writing and do not confirm AI authorship. They often appear in scholarly work, formal essays, and professional documents written entirely by humans.
+
+Specific false-positive triggers include phrases such as: ${flaggedPhrases.slice(0, 10).join(', ')}.
+
+Many AI detection tools rely on pattern matching rather than semantic understanding, which can lead to false positives for human-written content that follows academic conventions, uses formal language, or addresses complex topics systematically.
+
+This analysis was provided by ClearPen (codsworthphd.github.io/clearpen), a tool designed to help writers identify and understand AI detection patterns.`;
+        
+        document.getElementById('appealText').textContent = summary;
+        document.getElementById('appealOutput').classList.remove('hidden');
+        document.getElementById('appealOutput').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    window.copyAppealToClipboard = function() {
+        const text = document.getElementById('appealText').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const notice = document.getElementById('copiedNotice');
+            notice.classList.remove('hidden');
+            setTimeout(() => notice.classList.add('hidden'), 2000);
+        }).catch(err => {
+            alert('Failed to copy. Please select and copy manually.');
+        });
     };
 
     // Add event listener to Pro button for iOS compatibility
@@ -651,7 +783,7 @@ if(!text||text.split(/\s+/).length<10){alert('Please paste at least 10 words.');
         const messages = {
             'word-limit': `
                 <h3 class="font-serif text-2xl font-700 text-cream-50 mb-4">Text too long for free tier</h3>
-                <p class="text-cream-200/70 mb-6">Free users can analyze up to 500 words. Your text has ${wordCount} words.</p>
+                <p class="text-cream-200/70 mb-6">Free users can analyze up to 1,500 words. Your text has ${wordCount} words.</p>
                 <p class="text-cream-200/70 mb-8">Upgrade to Pro for unlimited text length, one-click humanization, and more.</p>
             `,
             'daily-limit': `
