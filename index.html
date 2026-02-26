@@ -10,6 +10,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Analytics 4 - Add your measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+        window.trackEvent = function(eventName, params = {}) {
+            if (typeof gtag !== 'undefined') { gtag('event', eventName, params); }
+            console.log('📊', eventName, params);
+        };
+    </script>
     <script>
         tailwind.config = {
             theme: {
@@ -385,7 +397,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <a href="https://buy.stripe.com/bJefZhgDC5Ej3dP8wEfUQ02" target="_blank" class="block w-full text-center px-6 py-3 bg-charcoal-900 text-cream-50 font-700 rounded hover:bg-charcoal-700 transition-colors">
+                        <a href="https://buy.stripe.com/bJefZhgDC5Ej3dP8wEfUQ02" onclick="trackEvent('payment_link_clicked', {plan: 'monthly'})" target="_blank" class="block w-full text-center px-6 py-3 bg-charcoal-900 text-cream-50 font-700 rounded hover:bg-charcoal-700 transition-colors">
                             Choose Monthly
                         </a>
                     </div>
@@ -434,7 +446,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <a href="https://buy.stripe.com/4gM5kD2MM1o3bKlaEMfUQ03" target="_blank" class="block w-full text-center px-6 py-3 bg-amber-500 text-charcoal-900 font-700 rounded hover:bg-amber-600 transition-colors">
+                        <a href="https://buy.stripe.com/4gM5kD2MM1o3bKlaEMfUQ03" onclick="trackEvent('payment_link_clicked', {plan: 'yearly'})" target="_blank" class="block w-full text-center px-6 py-3 bg-amber-500 text-charcoal-900 font-700 rounded hover:bg-amber-600 transition-colors">
                             Choose Annual
                         </a>
                     </div>
@@ -489,7 +501,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <a href="https://buy.stripe.com/14AdR94UU4Af4hTfZ6fUQ04" target="_blank" class="block w-full text-center px-6 py-3 bg-forest-600 text-cream-50 font-700 rounded hover:bg-forest-700 transition-colors">
+                        <a href="https://buy.stripe.com/14AdR94UU4Af4hTfZ6fUQ04" onclick="trackEvent('payment_link_clicked', {plan: 'lifetime'})" target="_blank" class="block w-full text-center px-6 py-3 bg-forest-600 text-cream-50 font-700 rounded hover:bg-forest-700 transition-colors">
                             Get Lifetime Access
                         </a>
                     </div>
@@ -568,6 +580,7 @@
     
     usage[today]++;
     localStorage.setItem('clearpen_usage', JSON.stringify(usage));
+    trackEvent("text_analyzed", {word_count: wordCount, checks_used: usage[today]});
 if(!text||text.split(/\s+/).length<10){alert('Please paste at least 10 words.');return}
     const r={};
     r.significance_inflation=findMatches(text,PATTERNS.significance_inflation);
@@ -749,11 +762,13 @@ This analysis was provided by ClearPen (codsworthphd.github.io/clearpen), a tool
     if (proButton) {
         proButton.addEventListener('click', function(e) {
             e.preventDefault();
+            trackEvent("upgrade_button_clicked", {trigger: "click"});
             openPricingModal();
         });
         // Also handle touch events for iOS Safari
         proButton.addEventListener('touchend', function(e) {
             e.preventDefault();
+            trackEvent("upgrade_button_clicked", {trigger: "touch"});
             openPricingModal();
         });
     }
@@ -787,6 +802,7 @@ This analysis was provided by ClearPen (codsworthphd.github.io/clearpen), a tool
     
     
     function showUpgradeModal(reason, wordCount) {
+        trackEvent("paywall_hit", {reason: reason, word_count: wordCount});
         const messages = {
             'word-limit': `
                 <h3 class="font-serif text-2xl font-700 text-cream-50 mb-4">Text too long for free tier</h3>
